@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>交易日志</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial;
+}
+
+body{
+    background:#f3f5f7;
+    padding:20px;
+}
+
+.container{
+    max-width:600px;
+    margin:auto;
+    background:white;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:5px;
+}
+
+input,select,textarea{
+
+    width:100%;
+    padding:10px;
+
+    border:1px solid #ddd;
+
+    border-radius:8px;
+
+    font-size:16px;
+
+}
+
+textarea{
+
+    height:120px;
+
+}
+
+button{
+
+    width:100%;
+
+    margin-top:20px;
+
+    padding:14px;
+
+    background:#2196F3;
+
+    color:white;
+
+    border:none;
+
+    border-radius:8px;
+
+    font-size:18px;
+
+}
+
+button:hover{
+
+    background:#1976D2;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>交易记录</h2>
+
+<form id="tradeForm">
+
+<label>日期</label>
+<input type="date" name="date">
+
+<label>币种</label>
+<input type="text" name="symbol" placeholder="BTC">
+
+<label>方向</label>
+<select name="direction">
+<option>Long</option>
+<option>Short</option>
+</select>
+
+<label>周期</label>
+<select name="timeframe">
+<option>15m</option>
+<option>1H</option>
+<option>4H</option>
+<option>1D</option>
+</select>
+
+<label>开仓价</label>
+<input type="number" name="entry">
+
+<label>平仓价</label>
+<input type="number" name="exit">
+
+<label>止损</label>
+<input type="number" name="sl">
+
+<label>止盈</label>
+<input type="number" name="tp">
+
+<label>仓位(U)</label>
+<input type="number" name="position">
+
+<label>交易理由</label>
+<textarea name="reason"></textarea>
+
+<label>复盘</label>
+<textarea name="review"></textarea>
+
+<button type="submit">
+提交交易
+</button>
+
+</form>
+
+</div>
+
+<script>
+
+document.getElementById("tradeForm").addEventListener("submit",async function(e){
+
+e.preventDefault();
+
+const formData=new FormData(this);
+
+const data=Object.fromEntries(formData.entries());
+
+const res=await fetch("http://localhost:3000/api/trade",{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify(data)
+
+});
+
+const result=await res.json();
+
+alert(result.message);
+
+});
+
+</script>
+
+</body>
+
+</html>
