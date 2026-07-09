@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>我的关注</title>
+
+<style>
+:root {
+  --primary-color: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-light: #818cf8;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --bg-gradient-start: #0f172a;
+  --bg-gradient-end: #1e1b4b;
+  --card-bg: rgba(30, 41, 59, 0.85);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border-color: rgba(148, 163, 184, 0.2);
+  --border-color-hover: rgba(99, 102, 241, 0.5);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.15);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+  min-height: 100vh;
+  padding: 40px 20px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+              radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.03) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: 25px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.nav-btn.active {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.card {
+  background: var(--card-bg);
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  backdrop-filter: blur(20px);
+  margin-bottom: 24px;
+  border: 1px solid var(--border-color);
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+  border-radius: 2px;
+}
+
+.header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+
+.header p {
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+.btn {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Inter', sans-serif;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: white;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+}
+
+.btn-sm {
+  padding: 10px 18px;
+  font-size: 14px;
+}
+
+.btn-edit {
+  padding: 8px 14px;
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary-light);
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 8px;
+}
+
+.btn-edit:hover {
+  background: rgba(99, 102, 241, 0.2);
+}
+
+.btn-delete {
+  padding: 8px 14px;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger-color);
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.search-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 14px 18px;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  font-size: 15px;
+  color: var(--text-primary);
+  background-color: rgba(0, 0, 0, 0.2);
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Inter', sans-serif;
+}
+
+.search-bar input:focus {
+  border-color: var(--primary-color);
+  background-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.search-bar input::placeholder {
+  color: var(--text-muted);
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+}
+
+.watchlist-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.watchlist-table th,
+.watchlist-table td {
+  padding: 16px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.watchlist-table th {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.watchlist-table td {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.watchlist-table tr:hover {
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.watchlist-table tr:last-child td {
+  border-bottom: none;
+}
+
+.watching-badge {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.watching-badge.yes {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--success-color);
+}
+
+.watching-badge.no {
+  background: rgba(148, 163, 184, 0.1);
+  color: var(--text-muted);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 40px;
+  color: var(--text-secondary);
+}
+
+.empty-state p {
+  font-size: 15px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.pagination button {
+  padding: 10px 18px;
+  border: 1px solid var(--border-color);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text-secondary);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+}
+
+.pagination button:hover:not(:disabled) {
+  border-color: var(--primary-color);
+  color: var(--primary-light);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination button.active {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.toast {
+  display: none;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  z-index: 2000;
+  animation: toastIn 0.3s ease-out, toastOut 0.3s ease-in 2.5s forwards;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toastOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.toast.success {
+  background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.toast.error {
+  background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group label span {
+  color: var(--danger-color);
+  margin-left: 4px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+input, select {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  font-size: 15px;
+  color: var(--text-primary);
+  background-color: rgba(0, 0, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  font-family: 'Inter', sans-serif;
+}
+
+input:focus, select:focus {
+  border-color: var(--primary-color);
+  background-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+input::placeholder {
+  color: var(--text-muted);
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: auto;
+  min-width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 30px 20px;
+  }
+  
+  .header h2 {
+    font-size: 26px;
+  }
+  
+  .search-bar {
+    flex-direction: column;
+  }
+  
+  .watchlist-table th,
+  .watchlist-table td {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 20px 16px;
+    border-radius: 20px;
+  }
+  
+  .header h2 {
+    font-size: 24px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  input, select {
+    padding: 14px 16px;
+    font-size: 16px;
+    min-height: 50px;
+  }
+  
+  .watchlist-table {
+    font-size: 12px;
+  }
+  
+  .watchlist-table th,
+  .watchlist-table td {
+    padding: 10px 8px;
+  }
+  
+  .nav-btn {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+  
+  .btn-edit, .btn-delete {
+    padding: 6px 10px;
+    font-size: 11px;
+    margin-right: 4px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="nav">
+    <a href="/" class="nav-btn">交易列表</a>
+    <a href="/add" class="nav-btn">添加交易</a>
+    <a href="/funds" class="nav-btn">出入金记录</a>
+    <a href="/watchlist" class="nav-btn active">我的关注</a>
+  </div>
+
+  <div class="card">
+    <div class="header">
+      <h2>我的关注</h2>
+      <p>管理您关注的股票和信号</p>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="搜索股票代码...">
+      <button class="btn btn-primary btn-sm" onclick="loadWatchlist()">搜索</button>
+      <button class="btn btn-primary" onclick="openModal()">新增</button>
+    </div>
+
+    <div class="table-container">
+      <table class="watchlist-table" id="watchlistTable">
+        <thead>
+          <tr>
+            <th>股票代码</th>
+            <th>猫哥8H信号</th>
+            <th>预计涨幅</th>
+            <th>是否持续关注</th>
+            <th>备注</th>
+            <th>更新时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="watchlistTableBody">
+          <tr>
+            <td colspan="7" class="empty-state">
+              <p>暂无记录</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div id="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1000; justify-content:center; align-items:center; backdrop-filter:blur(5px);">
+  <div id="modalContent" style="background:rgba(30,41,59,0.95); padding:30px; border-radius:24px; width:90%; max-width:500px; max-height:90vh; overflow-y:auto; border:1px solid rgba(148,163,184,0.2); box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
+    <h3 style="font-size:22px; margin-bottom:24px; color:#f8fafc; font-weight:600; letter-spacing:-0.5px;" id="modalTitle">新增关注</h3>
+    <form id="watchlistForm">
+      <input type="hidden" name="id" id="watchlistId">
+      <div class="form-group">
+        <label>股票代码 <span>*</span></label>
+        <input type="text" name="stock_code" id="stockCode" placeholder="如: BTC/USDT" required>
+      </div>
+      <div class="form-group">
+        <label>猫哥8H信号</label>
+        <input type="text" name="signal" id="signal" placeholder="如: 看多/看空/震荡">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>预计涨幅 (%)</label>
+          <input type="number" name="expected_gain" id="expectedGain" placeholder="0.00" step="0.01">
+        </div>
+        <div class="form-group">
+          <label>是否持续关注</label>
+          <div class="checkbox-group">
+            <input type="checkbox" name="is_watching" id="isWatching" checked>
+            <label for="isWatching" style="margin-bottom:0; font-weight:normal; color:#f8fafc;">持续关注</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>备注</label>
+        <textarea name="remark" id="remark" placeholder="添加备注信息..." rows="3" style="width:100%; padding:14px 18px; border:1px solid rgba(148,163,184,0.2); border-radius:14px; font-size:15px; color:#f8fafc; background-color:rgba(0,0,0,0.2); outline:none; resize:vertical; font-family:'Inter',sans-serif; line-height:1.6;"></textarea>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:24px;">
+        <button type="button" class="btn" onclick="closeModal()" style="background:rgba(148,163,184,0.1); color:#94a3b8; flex:1;">取消</button>
+        <button type="submit" class="btn btn-primary" style="flex:1;">保存</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="logsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1000; justify-content:center; align-items:center; backdrop-filter:blur(5px);">
+  <div id="logsModalContent" style="background:rgba(30,41,59,0.95); padding:30px; border-radius:24px; width:90%; max-width:600px; max-height:80vh; overflow-y:auto; border:1px solid rgba(148,163,184,0.2); box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+      <h3 style="font-size:22px; color:#f8fafc; font-weight:600;">操作记录</h3>
+      <button type="button" onclick="closeLogsModal()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b; transition:color 0.2s;">&times;</button>
+    </div>
+    <div id="logsContent">
+      <p style="color:#64748b; text-align:center; padding:40px;">暂无操作记录</p>
+    </div>
+  </div>
+</div>
+
+<script src="watchlist.js"></script>
+
+</body>
+</html>

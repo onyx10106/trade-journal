@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>交易记录列表</title>
+
+<style>
+:root {
+  --primary-color: #3b82f6;
+  --primary-dark: #2563eb;
+  --success-color: #22c55e;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --bg-gradient-start: #667eea;
+  --bg-gradient-end: #764ba2;
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.nav-btn {
+  padding: 10px 24px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-btn:hover {
+  background: white;
+  color: var(--primary-color);
+}
+
+.nav-btn.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.card {
+  background: var(--card-bg);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(10px);
+  margin-bottom: 24px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.header p {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.action-buttons-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.btn-action {
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-action:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-add {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: white;
+}
+
+.btn-funds {
+  background: white;
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+}
+
+.btn-funds:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-watchlist {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: white;
+}
+
+.filter-section {
+  margin-bottom: 24px;
+}
+
+.filter-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+.filter-group {
+  margin-bottom: 0;
+}
+
+.filter-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text-primary);
+  background-color: #f8fafc;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--primary-color);
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  cursor: pointer;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+.btn-secondary {
+  background: #f1f5f9;
+  color: var(--text-secondary);
+}
+
+.btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.trade-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.trade-table th,
+.trade-table td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.trade-table th {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: #f8fafc;
+  position: sticky;
+  top: 0;
+}
+
+.trade-table td {
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.trade-table tr:hover {
+  background: #f8fafc;
+}
+
+.trade-table tr.row-profit {
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.trade-table tr.row-loss {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.trade-table .profit {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.trade-table .loss {
+  color: var(--danger-color);
+  font-weight: 600;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.type-badge.long {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--success-color);
+}
+
+.type-badge.short {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger-color);
+}
+
+.text-right {
+  text-align: right;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-edit {
+  padding: 6px 10px;
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--primary-color);
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-edit:hover {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.btn-delete {
+  padding: 6px 10px;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger-color);
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+}
+
+.empty-state p {
+  font-size: 14px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 8px 14px;
+  border: 1px solid var(--border-color);
+  background: white;
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.pagination button.active {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 10px;
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.modal-header h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #f1f5f9;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.modal-close:hover {
+  background: #e2e8f0;
+}
+
+.modal-form-group {
+  margin-bottom: 16px;
+}
+
+.modal-form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.modal-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.modal textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text-primary);
+  background-color: #f8fafc;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.modal textarea:focus {
+  border-color: var(--primary-color);
+  background-color: white;
+  outline: none;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.modal-actions .btn {
+  flex: 1;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.confirm-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1001;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.confirm-modal.active {
+  display: flex;
+}
+
+.confirm-box {
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: modalIn 0.3s ease-out;
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.confirm-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.confirm-box h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.confirm-box p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.confirm-actions .btn {
+  flex: 1;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-confirm-cancel {
+  background: #f1f5f9;
+  color: var(--text-secondary);
+}
+
+.btn-confirm-cancel:hover {
+  background: #e2e8f0;
+}
+
+.btn-confirm-delete {
+  background: var(--danger-color);
+  color: white;
+}
+
+.btn-confirm-delete:hover {
+  background: #dc2626;
+}
+
+.toast {
+  display: none;
+  position: fixed;
+  top: 40px;
+  right: 40px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  z-index: 2000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  animation: toastIn 0.3s ease-out, toastOut 0.3s ease-in 2.5s forwards;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toastOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.toast.success {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
+.toast.error {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+@media (max-width: 768px) {
+  .filter-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .filter-row > div:last-child {
+    grid-column: span 2;
+  }
+  
+  .card {
+    padding: 20px 16px;
+  }
+  
+  .header h2 {
+    font-size: 22px;
+  }
+  
+  .trade-table {
+    font-size: 12px;
+  }
+  
+  .trade-table th,
+  .trade-table td {
+    padding: 8px 6px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .modal-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+    <div class="header">
+      <h2>交易记录列表</h2>
+      <p>查看和管理所有交易记录</p>
+    </div>
+
+    <div class="action-buttons-row">
+      <a href="/add" class="btn-action btn-add">添加交易</a>
+      <a href="/funds" class="btn-action btn-funds">出入金记录</a>
+      <a href="/watchlist" class="btn-action btn-watchlist">我的关注</a>
+    </div>
+
+    <div class="filter-section">
+      <h3>筛选条件</h3>
+      <div class="filter-row">
+        <div class="filter-group">
+          <label>币种</label>
+          <input type="text" id="filterSymbol" placeholder="BTC">
+        </div>
+        <div class="filter-group">
+          <label>方向</label>
+          <select id="filterDirection">
+            <option value="">全部</option>
+            <option value="long">多头</option>
+            <option value="short">空头</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>周期</label>
+          <select id="filterTimeframe">
+            <option value="">全部</option>
+            <option value="1m">1分钟</option>
+            <option value="5m">5分钟</option>
+            <option value="15m">15分钟</option>
+            <option value="1H">1小时</option>
+            <option value="4H">4小时</option>
+            <option value="1D">1天</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>开始时间</label>
+          <input type="datetime-local" id="filterStartDate">
+        </div>
+        <div class="filter-group">
+          <label>结束时间</label>
+          <input type="datetime-local" id="filterEndDate">
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button class="btn btn-primary" onclick="applyFilters()">筛选</button>
+        <button class="btn btn-secondary" onclick="clearFilters()">重置</button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="trade-table" id="tradeTable">
+        <thead>
+          <tr>
+            <th>时间</th>
+            <th>币种</th>
+            <th>方向</th>
+            <th>周期</th>
+            <th>杠杆</th>
+            <th>开仓价</th>
+            <th>平仓价</th>
+            <th>仓位</th>
+            <th>盈亏</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="tradeTableBody">
+          <tr>
+            <td colspan="11" class="empty-state">
+              <p>暂无记录</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" id="pagination">
+      <button onclick="goToPage(currentPage - 1)" id="prevBtn" disabled>上一页</button>
+      <span class="pagination-info" id="paginationInfo">显示 0-0 条，共 0 条</span>
+      <button onclick="goToPage(currentPage + 1)" id="nextBtn" disabled>下一页</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>编辑交易记录</h3>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <form id="editForm">
+      <input type="hidden" name="id" id="editId">
+      <div class="modal-form-row">
+        <div class="modal-form-group">
+          <label>时间 <span style="color:var(--danger-color)">*</span></label>
+          <input type="datetime-local" name="date" id="editDate" required>
+        </div>
+        <div class="modal-form-group">
+          <label>币种 <span style="color:var(--danger-color)">*</span></label>
+          <input type="text" name="symbol" id="editSymbol" required>
+        </div>
+      </div>
+      <div class="modal-form-row">
+        <div class="modal-form-group">
+          <label>方向 <span style="color:var(--danger-color)">*</span></label>
+          <select name="direction" id="editDirection" required>
+            <option value="long">多头</option>
+            <option value="short">空头</option>
+          </select>
+        </div>
+        <div class="modal-form-group">
+          <label>周期 <span style="color:var(--danger-color)">*</span></label>
+          <select name="timeframe" id="editTimeframe" required>
+            <option value="1m">1分钟</option>
+            <option value="5m">5分钟</option>
+            <option value="15m">15分钟</option>
+            <option value="1H">1小时</option>
+            <option value="4H">4小时</option>
+            <option value="1D">1天</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-form-row">
+        <div class="modal-form-group">
+          <label>杠杆倍数</label>
+          <input type="number" name="leverage" id="editLeverage" min="1" max="125">
+        </div>
+        <div class="modal-form-group">
+          <label>开仓金额</label>
+          <input type="number" name="position" id="editPosition">
+        </div>
+      </div>
+      <div class="modal-form-row">
+        <div class="modal-form-group">
+          <label>开仓价 <span style="color:var(--danger-color)">*</span></label>
+          <input type="number" name="entry" id="editEntry" step="0.0001" required>
+        </div>
+        <div class="modal-form-group">
+          <label>平仓价</label>
+          <input type="number" name="exit" id="editExit" step="0.0001">
+        </div>
+      </div>
+      <div class="modal-form-row">
+        <div class="modal-form-group">
+          <label>盈亏 (USD)</label>
+          <input type="number" name="pnl" id="editPnl" step="0.01">
+        </div>
+      </div>
+      <div class="modal-form-group">
+        <label>交易理由</label>
+        <textarea name="reason" id="editReason"></textarea>
+      </div>
+      <div class="modal-form-group">
+        <label>复盘</label>
+        <textarea name="review" id="editReview"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+        <button type="submit" class="btn btn-primary">保存修改</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="confirm-modal" id="confirmModal">
+  <div class="confirm-box">
+    <div class="confirm-icon">⚠</div>
+    <h3>确认删除</h3>
+    <p>确定要删除这条交易记录吗？此操作无法撤销。</p>
+    <div class="confirm-actions">
+      <button class="btn btn-confirm-cancel" onclick="closeConfirmModal()">取消</button>
+      <button class="btn btn-confirm-delete" onclick="confirmDelete()">删除</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="trades.js"></script>
+
+</body>
+</html>

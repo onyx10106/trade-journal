@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时钟 - Trading Journal Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .clock-container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .clock-wrapper {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 60px 80px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 0 60px rgba(99, 102, 241, 0.2),
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                inset 0 0 60px rgba(255, 255, 255, 0.02);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .clock-wrapper:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 0 80px rgba(99, 102, 241, 0.3),
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                inset 0 0 60px rgba(255, 255, 255, 0.03);
+        }
+
+        .time-display {
+            font-size: 8rem;
+            font-weight: 300;
+            color: #fff;
+            letter-spacing: 8px;
+            text-shadow: 
+                0 0 40px rgba(99, 102, 241, 0.5),
+                0 0 80px rgba(99, 102, 241, 0.3);
+            margin-bottom: 20px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .seconds-display {
+            font-size: 4rem;
+            color: rgba(99, 102, 241, 0.9);
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-shadow: 
+                0 0 20px rgba(99, 102, 241, 0.6);
+            margin-bottom: 30px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .date-display {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            letter-spacing: 4px;
+        }
+
+        .weekday-display {
+            font-size: 1.2rem;
+            color: rgba(167, 139, 250, 0.8);
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+
+        .timezone-display {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 20px;
+            letter-spacing: 1px;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            z-index: 1;
+        }
+
+        .nav-link {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .gradient-border {
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            border-radius: 30px;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6, #ec4899, #6366f1);
+            background-size: 400% 400%;
+            animation: gradientMove 8s ease infinite;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .inner-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .clock-wrapper {
+                padding: 40px 30px;
+                margin: 0 20px;
+            }
+
+            .time-display {
+                font-size: 4rem;
+                letter-spacing: 4px;
+            }
+
+            .seconds-display {
+                font-size: 2rem;
+                letter-spacing: 2px;
+            }
+
+            .date-display {
+                font-size: 1rem;
+                letter-spacing: 2px;
+            }
+
+            .weekday-display {
+                font-size: 0.9rem;
+            }
+
+            .nav-link {
+                top: 20px;
+                left: 20px;
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .time-display {
+                font-size: 3rem;
+                letter-spacing: 2px;
+            }
+
+            .seconds-display {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <a href="/" class="nav-link">← 返回主页</a>
+    
+    <div class="clock-container">
+        <div class="clock-wrapper">
+            <div class="gradient-border"></div>
+            <div class="inner-content">
+                <div class="time-display" id="timeDisplay">00:00</div>
+                <div class="seconds-display" id="secondsDisplay">00</div>
+                <div class="date-display" id="dateDisplay">2026年07月07日</div>
+                <div class="weekday-display" id="weekdayDisplay">星期一</div>
+                <div class="timezone-display">UTC+8 北京时间</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">Trading Journal Pro</div>
+
+    <script>
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 100;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.width = Math.random() * 2 + 1 + 'px';
+                star.style.height = star.style.width;
+                starsContainer.appendChild(star);
+            }
+        }
+
+        function updateClock() {
+            const now = new Date();
+            
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekday = weekdays[now.getDay()];
+            
+            document.getElementById('timeDisplay').textContent = `${hours}:${minutes}`;
+            document.getElementById('secondsDisplay').textContent = seconds;
+            document.getElementById('dateDisplay').textContent = `${year}年${month}月${day}日`;
+            document.getElementById('weekdayDisplay').textContent = weekday;
+        }
+
+        createStars();
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>

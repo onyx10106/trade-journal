@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>出入金记录</title>
+
+<style>
+:root {
+  --primary-color: #3b82f6;
+  --primary-dark: #2563eb;
+  --success-color: #22c55e;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --bg-gradient-start: #667eea;
+  --bg-gradient-end: #764ba2;
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.nav-btn {
+  padding: 10px 24px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-btn:hover {
+  background: white;
+  color: var(--primary-color);
+}
+
+.nav-btn.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.card {
+  background: var(--card-bg);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(10px);
+  margin-bottom: 24px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.header p {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.balance-card {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.balance-card.highlight {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+}
+
+.balance-card h3 {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+.balance-card .amount {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.balance-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.balance-item {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.balance-item label {
+  display: block;
+  font-size: 12px;
+  opacity: 0.8;
+  margin-bottom: 4px;
+}
+
+.balance-item.value {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.balance-item.value.deposit {
+  color: #86efac;
+}
+
+.balance-item.value.withdraw {
+  color: #fca5a5;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.form-group label span {
+  color: var(--danger-color);
+  margin-left: 4px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 14px;
+  color: var(--text-primary);
+  background-color: #f8fafc;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary-color);
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+input::placeholder, textarea::placeholder {
+  color: #94a3b8;
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  cursor: pointer;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.btn-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.btn {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-deposit {
+  background: linear-gradient(135deg, var(--success-color) 0%, #16a34a 100%);
+  color: white;
+}
+
+.btn-withdraw {
+  background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+  color: white;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: white;
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.fund-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.fund-table th,
+.fund-table td {
+  padding: 14px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.fund-table th {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.fund-table td {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.fund-table tr:hover {
+  background: #f8fafc;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.type-badge.deposit {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--success-color);
+}
+
+.type-badge.withdraw {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger-color);
+}
+
+.amount-positive {
+  color: var(--success-color);
+  font-weight: 600;
+}
+
+.amount-negative {
+  color: var(--danger-color);
+  font-weight: 600;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+}
+
+.empty-state p {
+  font-size: 14px;
+}
+
+.btn-delete {
+  padding: 6px 12px;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger-color);
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.btn-edit {
+  padding: 6px 12px;
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--primary-color);
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 6px;
+}
+
+.btn-edit:hover {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.toast {
+  display: none;
+  position: fixed;
+  top: 40px;
+  right: 40px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  z-index: 2000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  animation: toastIn 0.3s ease-out, toastOut 0.3s ease-in 2.5s forwards;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toastOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.toast.success {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
+.toast.error {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .card {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+  
+  .header h2 {
+    font-size: 22px;
+  }
+  
+  .balance-card .amount {
+    font-size: 32px;
+  }
+  
+  .balance-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .btn-group {
+    grid-template-columns: 1fr;
+  }
+  
+  input, select, textarea {
+    padding: 14px 16px;
+    font-size: 16px;
+    min-height: 48px;
+  }
+  
+  .fund-table {
+    font-size: 12px;
+  }
+  
+  .fund-table th,
+  .fund-table td {
+    padding: 10px 8px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="nav">
+    <a href="/" class="nav-btn">交易列表</a>
+    <a href="/add" class="nav-btn">添加交易</a>
+    <a href="/funds" class="nav-btn active">出入金记录</a>
+    <a href="/watchlist" class="nav-btn">我的关注</a>
+  </div>
+
+  <div class="card">
+    <div class="header">
+      <h2>出入金记录</h2>
+      <p>记录您的资金变动情况</p>
+    </div>
+
+    <div class="balance-card">
+      <h3>理论余额</h3>
+      <div class="amount" id="balanceAmount">$0.00</div>
+      <div class="balance-row">
+        <div class="balance-item">
+          <label>入金总额</label>
+          <div class="balance-item value deposit" id="totalDeposit">$0.00</div>
+        </div>
+        <div class="balance-item">
+          <label>出金总额</label>
+          <div class="balance-item value withdraw" id="totalWithdraw">$0.00</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="balance-card highlight">
+      <h3>实际余额</h3>
+      <div class="amount" id="actualBalanceAmount">$0.00</div>
+      <button class="btn btn-primary btn-sm" onclick="openBalanceModal()">修改实际余额</button>
+    </div>
+
+    <form id="fundForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label>类型 <span>*</span></label>
+          <select name="type" id="fundType" required>
+            <option value="deposit">入金 (Deposit)</option>
+            <option value="withdraw">出金 (Withdraw)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>时间 <span>*</span></label>
+          <input type="datetime-local" name="date" id="datetimeInput" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>金额 (USD) <span>*</span></label>
+        <input type="number" name="amount" id="amountInput" placeholder="0.00" step="0.01" min="0" required>
+      </div>
+
+      <div class="form-group">
+        <label>地址</label>
+        <input name="address" placeholder="钱包地址或银行账号">
+      </div>
+
+      <div class="form-group">
+        <label>原因</label>
+        <textarea name="reason" placeholder="填写出入金原因..."></textarea>
+      </div>
+
+      <div class="btn-group">
+        <button type="submit" class="btn btn-deposit" id="depositBtn">确认入金</button>
+        <button type="submit" class="btn btn-withdraw" id="withdrawBtn">确认出金</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="section-title">出入金记录</div>
+    <div class="table-container">
+      <table class="fund-table" id="fundTable">
+        <thead>
+          <tr>
+            <th>时间</th>
+            <th>类型</th>
+            <th>金额</th>
+            <th>地址</th>
+            <th>原因</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="fundTableBody">
+          <tr>
+            <td colspan="6" class="empty-state">
+              <p>暂无记录</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">实际余额调整记录</div>
+    <div class="table-container">
+      <table class="fund-table" id="balanceTable">
+        <thead>
+          <tr>
+            <th>时间</th>
+            <th>余额</th>
+            <th>原因</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="balanceTableBody">
+          <tr>
+            <td colspan="4" class="empty-state">
+              <p>暂无记录</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div id="balanceModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+  <div style="background:white; padding:30px; border-radius:20px; width:90%; max-width:400px;">
+    <h3 style="font-size:20px; margin-bottom:20px;">修改实际余额</h3>
+    <form id="balanceForm">
+      <input type="hidden" name="id" id="balanceId">
+      <div class="form-group">
+        <label>时间 <span>*</span></label>
+        <input type="datetime-local" name="date" id="balanceDate" required>
+      </div>
+      <div class="form-group">
+        <label>余额 (USD) <span>*</span></label>
+        <input type="number" name="amount" id="balanceAmountInput" placeholder="0.00" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label>原因</label>
+        <textarea name="reason" id="balanceReason" placeholder="填写调整原因..."></textarea>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:20px;">
+        <button type="button" class="btn" onclick="closeBalanceModal()" style="background:#f1f5f9; color:#64748b; flex:1;">取消</button>
+        <button type="submit" class="btn btn-primary" style="flex:1;">保存</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="funds.js"></script>
+
+</body>
+</html>
