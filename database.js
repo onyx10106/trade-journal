@@ -125,4 +125,20 @@ db.serialize(() => {
     `);
 });
 
+db.serialize(() => {
+    db.run(`
+        CREATE TABLE IF NOT EXISTS trade_attachments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            trade_id INTEGER NOT NULL,
+            filename TEXT NOT NULL,
+            filepath TEXT NOT NULL,
+            file_url TEXT NOT NULL,
+            file_type TEXT,
+            size INTEGER,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (trade_id) REFERENCES trades(id)
+        )
+    `);
+});
+
 module.exports = db;

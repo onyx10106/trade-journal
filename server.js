@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
 const supabase = require('./supabaseClient');
 const db = require('./database');
 
@@ -9,6 +11,34 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+const uploadsDir = path.join(__dirname, 'public', 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname);
+    cb(null, uniqueName);
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('只允许上传图片文件'), false);
+    }
+  }
+});
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -134,6 +164,77 @@ app.delete('/api/trade/:id', (req, res) => {
       return res.json({ success: false, error: err.message });
     }
     res.json({ success: true, data: { id, changes: this.changes } });
+  });
+});
+
+app.post('/api/trade/:id/upload', upload.array('files', 10), (req, res) => {
+  const { id } = req.params;
+  
+  if (!req.files || req.files.length === 0) {
+    return res.json({ success: false, error: '请选择要上传的图片' });
+  }
+  
+  const attachments = req.files.map(file => ({
+    trade_id: id,
+    filename: file.originalname,
+    filepath: file.path,
+    file_url: `/uploads/${file.filename}`,
+    file_type: file.mimetype,
+    size: file.size
+  }));
+  
+  const placeholders = attachments.map(() => '(?, ?, ?, ?, ?, ?)').join(',');
+  const values = attachments.flatMap(a => [a.trade_id, a.filename, a.filepath, a.file_url, a.file_type, a.size]);
+  
+  db.run(
+    `INSERT INTO trade_attachments (trade_id, filename, filepath, file_url, file_type, size) VALUES ${placeholders}`,
+    values,
+    function(err) {
+      if (err) {
+        req.files.forEach(file => fs.unlinkSync(file.path));
+        return res.json({ success: false, error: err.message });
+      }
+      res.json({ 
+        success: true, 
+        data: { 
+          count: this.changes,
+          attachments: attachments.map(a => ({ filename: a.filename, url: a.file_url }))
+        } 
+      });
+    }
+  );
+});
+
+app.get('/api/trade/:id/attachments', (req, res) => {
+  const { id } = req.params;
+  
+  db.all(`SELECT * FROM trade_attachments WHERE trade_id = ? ORDER BY created_at DESC`, [id], (err, rows) => {
+    if (err) {
+      return res.json({ success: false, error: err.message });
+    }
+    res.json({ success: true, data: rows });
+  });
+});
+
+app.delete('/api/attachment/:id', (req, res) => {
+  const { id } = req.params;
+  
+  db.get(`SELECT * FROM trade_attachments WHERE id = ?`, [id], (err, row) => {
+    if (err) {
+      return res.json({ success: false, error: err.message });
+    }
+    if (!row) {
+      return res.json({ success: false, error: '附件不存在' });
+    }
+    
+    fs.unlink(row.filepath, (unlinkErr) => {
+      db.run(`DELETE FROM trade_attachments WHERE id = ?`, [id], function(deleteErr) {
+        if (deleteErr) {
+          return res.json({ success: false, error: deleteErr.message });
+        }
+        res.json({ success: true, data: { id, changes: this.changes } });
+      });
+    });
   });
 });
 
@@ -417,7 +518,10 @@ app.delete('/api/watchlist/:id', (req, res) => {
   });
 });
 
-const port = 3000;
-app.listen(port, () => {
-  console.log(`Server running: http://localhost:${port}`);
+const port = process.env.PORT || 3000;
+const host = process.env.HOST || '0.0.0.0';
+
+app.listen(port, host, () => {
+  console.log(`Server running: http://${host}:${port}`);
+  console.log(`公网访问地址: http://121.43.49.195:${port}`);
 });

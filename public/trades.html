@@ -287,6 +287,78 @@ select {
   font-weight: 600;
 }
 
+.attachments-preview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.attachment-thumb {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.attachment-thumb:hover {
+  border-color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.more-count {
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: var(--border-color);
+  padding: 4px 8px;
+  border-radius: 10px;
+}
+
+.image-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-modal.active {
+  display: flex;
+}
+
+.image-modal img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.image-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.image-modal-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 .type-badge {
   display: inline-block;
   padding: 4px 10px;
@@ -754,6 +826,7 @@ select {
             <th>平仓价</th>
             <th>仓位</th>
             <th>盈亏</th>
+            <th>附件</th>
             <th>操作</th>
           </tr>
         </thead>
@@ -827,11 +900,11 @@ select {
       <div class="modal-form-row">
         <div class="modal-form-group">
           <label>开仓价 <span style="color:var(--danger-color)">*</span></label>
-          <input type="number" name="entry" id="editEntry" step="0.0001" required>
+          <input type="number" name="entry" id="editEntry" step="0.0000000001" required>
         </div>
         <div class="modal-form-group">
           <label>平仓价</label>
-          <input type="number" name="exit" id="editExit" step="0.0001">
+          <input type="number" name="exit" id="editExit" step="0.0000000001">
         </div>
       </div>
       <div class="modal-form-row">
@@ -848,12 +921,32 @@ select {
         <label>复盘</label>
         <textarea name="review" id="editReview"></textarea>
       </div>
+      <div class="modal-form-group">
+        <label>附件</label>
+        <div class="upload-area" id="editUploadArea">
+          <input type="file" id="editFileInput" multiple accept="image/*" style="display:none">
+          <div class="upload-placeholder" onclick="document.getElementById('editFileInput').click()">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <p>点击上传图片</p>
+          </div>
+          <div class="uploaded-files" id="editUploadedFiles"></div>
+        </div>
+      </div>
       <div class="modal-actions">
         <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
         <button type="submit" class="btn btn-primary">保存修改</button>
       </div>
     </form>
   </div>
+</div>
+
+<div class="image-modal" id="imageModal" onclick="closeImageModal()">
+  <button class="image-modal-close" onclick="closeImageModal()">&times;</button>
+  <img id="previewImage" src="" alt="预览" onclick="event.stopPropagation()">
 </div>
 
 <div class="confirm-modal" id="confirmModal">

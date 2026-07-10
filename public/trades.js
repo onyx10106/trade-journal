@@ -1,6 +1,7 @@
 let currentPage = 1;
 let currentFilters = {};
 let paginationData = { total: 0, pages: 0 };
+let tradesWithAttachments = [];
 
 document.addEventListener("DOMContentLoaded", () => {
   loadTrades();
@@ -31,11 +32,25 @@ const loadTrades = async () => {
     const result = await res.json();
 
     if (result.success) {
-      renderTable(result.data);
+      tradesWithAttachments = result.data;
+      await loadAttachmentsForTrades(tradesWithAttachments);
+      renderTable(tradesWithAttachments);
       updatePagination(result.pagination);
     }
   } catch (err) {
     console.error("加载交易记录失败:", err);
+  }
+};
+
+const loadAttachmentsForTrades = async (trades) => {
+  for (const trade of trades) {
+    try {
+      const res = await fetch(`/api/trade/${trade.id}/attachments`);
+      const result = await res.json();
+      trade.attachments = result.success ? result.data : [];
+    } catch (err) {
+      trade.attachments = [];
+    }
   }
 };
 
@@ -45,7 +60,7 @@ const renderTable = (trades) => {
   if (!trades || trades.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="9" class="empty-state">
+        <td colspan="11" class="empty-state">
           <p>暂无记录</p>
         </td>
       </tr>
@@ -58,6 +73,16 @@ const renderTable = (trades) => {
     const pnlDisplay = pnl !== null && pnl !== undefined ? `$${parseFloat(pnl).toFixed(2)}` : '';
     const pnlClass = pnl !== null && pnl !== undefined ? (pnl >= 0 ? 'profit' : 'loss') : '';
     const rowClass = pnl !== null && pnl !== undefined ? (pnl > 0 ? 'row-profit' : pnl < 0 ? 'row-loss' : '') : '';
+    
+    const attachments = trade.attachments || [];
+    const attachmentsHtml = attachments.length > 0 ? `
+      <div class="attachments-preview">
+        ${attachments.slice(0, 3).map((att, i) => `
+          <img src="${att.file_url}" class="attachment-thumb" onclick="showImage('${att.file_url}')" title="${att.filename}">
+        `).join('')}
+        ${attachments.length > 3 ? `<span class="more-count">+${attachments.length - 3}</span>` : ''}
+      </div>
+    ` : '';
     
     return `
     <tr class="${rowClass}">
@@ -74,6 +99,7 @@ const renderTable = (trades) => {
       <td>$${(trade.exit || 0).toFixed(4)}</td>
       <td>$${(trade.position || 0).toFixed(2)}</td>
       <td class="${pnlClass}">${pnlDisplay}</td>
+      <td>${attachmentsHtml}</td>
       <td>
         <div class="action-buttons">
           <button class="btn-edit" onclick="editTrade(${trade.id})">编辑</button>
@@ -82,6 +108,18 @@ const renderTable = (trades) => {
       </td>
     </tr>
   `}).join('');
+};
+
+const showImage = (url) => {
+  const modal = document.getElementById("imageModal");
+  const img = document.getElementById("previewImage");
+  img.src = url;
+  modal.classList.add("active");
+};
+
+const closeImageModal = () => {
+  const modal = document.getElementById("imageModal");
+  modal.classList.remove("active");
 };
 
 const updatePagination = (pagination) => {
@@ -131,13 +169,35 @@ const clearFilters = () => {
   loadTrades();
 };
 
+let editFilesToUpload = [];
+
 const editTrade = async (id) => {
   try {
-    const res = await fetch(`/api/trade/${id}`);
-    const result = await res.json();
+    const [tradeRes, attachmentsRes] = await Promise.all([
+      fetch(`/api/trade/${id}`),
+      fetch(`/api/trade/${id}/attachments`)
+    ]);
 
-    if (result.success && result.data) {
-      populateEditForm(result.data);
+    const tradeResult = await tradeRes.json();
+    const attachmentsResult = await attachmentsRes.json();
+
+    if (tradeResult.success && tradeResult.data) {
+      populateEditForm(tradeResult.data);
+      editFilesToUpload = [];
+      const editUploadedFiles = document.getElementById("editUploadedFiles");
+      editUploadedFiles.innerHTML = '';
+      
+      const existingAttachments = attachmentsResult.success ? attachmentsResult.data : [];
+      existingAttachments.forEach(att => {
+        const div = document.createElement("div");
+        div.className = "uploaded-file";
+        div.innerHTML = `
+          <img src="${att.file_url}" alt="${att.filename}">
+          <button class="remove-btn" onclick="removeEditAttachment(${att.id}, this)">&times;</button>
+        `;
+        editUploadedFiles.appendChild(div);
+      });
+      
       document.getElementById("editModal").classList.add("active");
     } else {
       alert("未找到交易记录");
@@ -170,6 +230,55 @@ const populateEditForm = (trade) => {
 const closeModal = () => {
   document.getElementById("editModal").classList.remove("active");
   document.getElementById("editForm").reset();
+  editFilesToUpload = [];
+  document.getElementById("editUploadedFiles").innerHTML = '';
+};
+
+const removeEditAttachment = async (attachmentId, btn) => {
+  if (!confirm("确定要删除这个附件吗？")) return;
+  
+  try {
+    const res = await fetch(`/api/attachment/${attachmentId}`, {
+      method: "DELETE"
+    });
+    const result = await res.json();
+    
+    if (result.success) {
+      btn.parentElement.remove();
+      showToast("附件删除成功！", "success");
+    } else {
+      showToast("删除失败: " + result.error, "error");
+    }
+  } catch (err) {
+    showToast("请求失败: " + err.message, "error");
+  }
+};
+
+document.getElementById("editFileInput").addEventListener("change", (e) => {
+  const editUploadedFiles = document.getElementById("editUploadedFiles");
+  Array.from(e.target.files).forEach(file => {
+    editFilesToUpload.push(file);
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const div = document.createElement("div");
+      div.className = "uploaded-file";
+      div.innerHTML = `
+        <img src="${ev.target.result}" alt="${file.name}">
+        <button class="remove-btn" onclick="removeEditFile('${file.name}', this)">&times;</button>
+      `;
+      editUploadedFiles.appendChild(div);
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = '';
+});
+
+const removeEditFile = (fileName, btn) => {
+  const index = editFilesToUpload.findIndex(f => f.name === fileName);
+  if (index > -1) {
+    editFilesToUpload.splice(index, 1);
+  }
+  btn.parentElement.remove();
 };
 
 let deleteTradeId = null;
@@ -250,6 +359,20 @@ document.getElementById("editForm").addEventListener("submit", async (e) => {
     const result = await res.json();
 
     if (result.success) {
+      if (editFilesToUpload.length > 0) {
+        const uploadFormData = new FormData();
+        editFilesToUpload.forEach(file => {
+          uploadFormData.append("files", file);
+        });
+        const uploadRes = await fetch(`/api/trade/${data.id}/upload`, {
+          method: "POST",
+          body: uploadFormData
+        });
+        const uploadResult = await uploadRes.json();
+        if (!uploadResult.success) {
+          showToast("附件上传失败: " + uploadResult.error, "error");
+        }
+      }
       showToast("修改成功！", "success");
       closeModal();
       loadTrades();
