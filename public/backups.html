@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>数据备份管理</title>
+
+<style>
+:root {
+  --primary-color: #3b82f6;
+  --primary-dark: #2563eb;
+  --success-color: #22c55e;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --bg-gradient-start: #667eea;
+  --bg-gradient-end: #764ba2;
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.nav-btn {
+  padding: 10px 24px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-btn:hover {
+  background: white;
+  color: var(--primary-color);
+}
+
+.nav-btn.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.card {
+  background: var(--card-bg);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(10px);
+  margin-bottom: 24px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.header p {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.action-bar {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.backup-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.backup-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.backup-item:hover {
+  background: white;
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-md);
+}
+
+.backup-info {
+  flex: 1;
+}
+
+.backup-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.backup-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.backup-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.backup-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-restore {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-restore:hover {
+  background: var(--primary-dark);
+}
+
+.btn-restore:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-delete {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger-color);
+}
+
+.btn-delete:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+
+.empty-state svg {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  font-size: 14px;
+}
+
+.toast {
+  display: none;
+  position: fixed;
+  top: 40px;
+  right: 40px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  z-index: 2000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  animation: toastIn 0.3s ease-out, toastOut 0.3s ease-in 2.5s forwards;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toastOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.toast.success {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
+.toast.error {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.confirm-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1001;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.confirm-modal.active {
+  display: flex;
+}
+
+.confirm-box {
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: modalIn 0.3s ease-out;
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.confirm-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.confirm-icon.info {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.confirm-box h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.confirm-box p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.confirm-actions .btn {
+  flex: 1;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-confirm-cancel {
+  background: #f1f5f9;
+  color: var(--text-secondary);
+}
+
+.btn-confirm-cancel:hover {
+  background: #e2e8f0;
+}
+
+.btn-confirm-delete {
+  background: var(--danger-color);
+  color: white;
+}
+
+.btn-confirm-delete:hover {
+  background: #dc2626;
+}
+
+.btn-confirm-restore {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-confirm-restore:hover {
+  background: var(--primary-dark);
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 20px 16px;
+  }
+  
+  .header h2 {
+    font-size: 22px;
+  }
+  
+  .backup-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .backup-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .backup-meta {
+    flex-wrap: wrap;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+    <div class="header">
+      <h2>数据备份管理</h2>
+      <p>查看和管理所有数据备份，支持增量恢复</p>
+    </div>
+
+    <div class="nav">
+      <a href="/trades" class="nav-btn">交易列表</a>
+      <a href="/add" class="nav-btn">添加交易</a>
+      <a href="/funds" class="nav-btn">出入金记录</a>
+      <a href="/watchlist" class="nav-btn">我的关注</a>
+      <a href="/backups" class="nav-btn active">备份管理</a>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn btn-primary" onclick="createManualBackup()">📦 创建手动备份</button>
+    </div>
+
+    <div class="backup-list" id="backupList">
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <h3>加载中...</h3>
+        <p>正在获取备份列表</p>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="confirm-modal" id="restoreConfirmModal">
+  <div class="confirm-box">
+    <div class="confirm-icon info">🔄</div>
+    <h3>确认恢复</h3>
+    <p>此操作将从备份中恢复数据库和附件文件。<br><strong>已存在的数据不会被覆盖或修改。</strong></p>
+    <div class="confirm-actions">
+      <button class="btn btn-confirm-cancel" onclick="closeRestoreConfirm()">取消</button>
+      <button class="btn btn-confirm-restore" onclick="confirmRestore()">确认恢复</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-modal" id="deleteConfirmModal">
+  <div class="confirm-box">
+    <div class="confirm-icon">🗑️</div>
+    <h3>确认删除</h3>
+    <p>确定要删除此备份吗？此操作无法撤销。</p>
+    <div class="confirm-actions">
+      <button class="btn btn-confirm-cancel" onclick="closeDeleteConfirm()">取消</button>
+      <button class="btn btn-confirm-delete" onclick="confirmDelete()">删除</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let backups = [];
+let currentRestoreBackup = null;
+let currentDeleteBackup = null;
+
+const token = localStorage.getItem('token');
+
+const showToast = (message, type = 'success') => {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = `toast ${type}`;
+  toast.style.display = 'block';
+  setTimeout(() => {
+    toast.style.display = 'none';
+  }, 3000);
+};
+
+const formatSize = (bytes) => {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+
+const formatDate = (date) => {
+  const d = new Date(date);
+  return d.toLocaleString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+};
+
+const loadBackups = async () => {
+  try {
+    const response = await fetch('/api/backups', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    const result = await response.json();
+    
+    if (result.success) {
+      backups = result.data;
+      renderBackups();
+    } else {
+      showToast('获取备份列表失败: ' + result.error, 'error');
+      renderEmpty();
+    }
+  } catch (err) {
+    showToast('获取备份列表失败: ' + err.message, 'error');
+    renderEmpty();
+  }
+};
+
+const createManualBackup = async () => {
+  const btn = document.querySelector('.action-bar .btn-primary');
+  const originalText = btn.textContent;
+  btn.textContent = '备份中...';
+  btn.disabled = true;
+
+  try {
+    const response = await fetch('/api/backups/manual', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    const result = await response.json();
+    
+    if (result.success) {
+      showToast(result.message, 'success');
+      loadBackups();
+    } else {
+      showToast('备份失败: ' + result.error, 'error');
+    }
+  } catch (err) {
+    showToast('备份失败: ' + err.message, 'error');
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
+};
+
+const renderEmpty = () => {
+  document.getElementById('backupList').innerHTML = `
+    <div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="17 8 12 3 7 8"></polyline>
+        <line x1="12" y1="3" x2="12" y2="15"></line>
+      </svg>
+      <h3>暂无备份</h3>
+      <p>点击上方按钮创建手动备份</p>
+    </div>
+  `;
+};
+
+const renderBackups = () => {
+  if (backups.length === 0) {
+    renderEmpty();
+    return;
+  }
+
+  const html = backups.map(backup => `
+    <div class="backup-item">
+      <div class="backup-info">
+        <div class="backup-name">${backup.name}</div>
+        <div class="backup-meta">
+          <span>📅 ${formatDate(backup.created_at)}</span>
+          <span>📦 ${formatSize(backup.size)}</span>
+          ${backup.images_info ? `<span>🖼️ ${backup.images_info}</span>` : ''}
+        </div>
+      </div>
+      <div class="backup-actions">
+        <button class="btn btn-restore" onclick="showRestoreConfirm('${backup.name}')">恢复</button>
+        <button class="btn btn-delete" onclick="showDeleteConfirm('${backup.name}')">删除</button>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('backupList').innerHTML = html;
+};
+
+const showRestoreConfirm = (backupName) => {
+  currentRestoreBackup = backupName;
+  document.getElementById('restoreConfirmModal').classList.add('active');
+};
+
+const closeRestoreConfirm = () => {
+  currentRestoreBackup = null;
+  document.getElementById('restoreConfirmModal').classList.remove('active');
+};
+
+const confirmRestore = async () => {
+  if (!currentRestoreBackup) return;
+
+  closeRestoreConfirm();
+  
+  const restoreBtn = document.querySelector(`button[onclick="showRestoreConfirm('${currentRestoreBackup}')"]`);
+  if (restoreBtn) {
+    restoreBtn.disabled = true;
+    restoreBtn.textContent = '恢复中...';
+  }
+
+  try {
+    const response = await fetch(`/api/backups/${encodeURIComponent(currentRestoreBackup)}/restore`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    const result = await response.json();
+    
+    if (result.success) {
+      showToast(result.message, 'success');
+      loadBackups();
+    } else {
+      showToast('恢复失败: ' + result.error, 'error');
+    }
+  } catch (err) {
+    showToast('恢复失败: ' + err.message, 'error');
+  } finally {
+    if (restoreBtn) {
+      restoreBtn.disabled = false;
+      restoreBtn.textContent = '恢复';
+    }
+  }
+};
+
+const showDeleteConfirm = (backupName) => {
+  currentDeleteBackup = backupName;
+  document.getElementById('deleteConfirmModal').classList.add('active');
+};
+
+const closeDeleteConfirm = () => {
+  currentDeleteBackup = null;
+  document.getElementById('deleteConfirmModal').classList.remove('active');
+};
+
+const confirmDelete = async () => {
+  if (!currentDeleteBackup) return;
+
+  closeDeleteConfirm();
+  
+  const deleteBtn = document.querySelector(`button[onclick="showDeleteConfirm('${currentDeleteBackup}')"]`);
+  if (deleteBtn) {
+    deleteBtn.disabled = true;
+    deleteBtn.textContent = '删除中...';
+  }
+
+  try {
+    const response = await fetch(`/api/backups/${encodeURIComponent(currentDeleteBackup)}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    const result = await response.json();
+    
+    if (result.success) {
+      showToast('备份删除成功', 'success');
+      loadBackups();
+    } else {
+      showToast('删除失败: ' + result.error, 'error');
+    }
+  } catch (err) {
+    showToast('删除失败: ' + err.message, 'error');
+  } finally {
+    if (deleteBtn) {
+      deleteBtn.disabled = false;
+      deleteBtn.textContent = '删除';
+    }
+  }
+};
+
+window.addEventListener('load', loadBackups);
+</script>
+
+</body>
+</html>

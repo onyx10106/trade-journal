@@ -1,0 +1,733 @@
+{
+  "backup_time": "2026-07-10T23:28:59.591Z",
+  "table_count": 6,
+  "tables": {
+    "trades": {
+      "schema": "CREATE TABLE trades (\n            id INTEGER PRIMARY KEY AUTOINCREMENT,\n            date TEXT,\n            symbol TEXT,\n            direction TEXT,\n            timeframe TEXT,\n            entry REAL,\n            exit REAL,\n            sl REAL,\n            tp REAL,\n            position REAL,\n            reason TEXT,\n            review TEXT,\n            created_at DATETIME DEFAULT CURRENT_TIMESTAMP\n        , leverage INTEGER DEFAULT 10, deleted_at DATETIME, pnl REAL)",
+      "count": 17,
+      "data": [
+        {
+          "id": 4,
+          "date": "2026-07-06",
+          "symbol": "BTC",
+          "direction": "long",
+          "timeframe": "1H",
+          "entry": 63115,
+          "exit": 62900,
+          "sl": 62926,
+          "tp": 65000,
+          "position": 400,
+          "reason": "è��1Сʱ���Կ��࣬k�ߵ�����20���ߣ����ϵ���60���ߣ��о��Լ۱Ⱥܸߣ����ʺܸߣ�",
+          "review": "���������ֹ��۸񣬱�ƽ�֣�\\n���򣺽��ײ��ɶģ��ϸ����������ز� 20���߲��Ʋſ���\\n����2���г��ϵ�Ǯ�����꣬�������Ǯ���ǿ��Կ��ꡣ",
+          "created_at": "2026-07-06 07:27:43",
+          "leverage": 10,
+          "deleted_at": "2026-07-08 06:08:02",
+          "pnl": null
+        },
+        {
+          "id": 5,
+          "date": "2026-07-06",
+          "symbol": "BTC",
+          "direction": "long",
+          "timeframe": "1H",
+          "entry": 63115,
+          "exit": 62900,
+          "sl": 62926,
+          "tp": 65000,
+          "position": 400,
+          "reason": "猫哥1小时策略看多，k线跌破了20均线，马上跌到60均线，感觉性价比很高（赔率很高）",
+          "review": "结果：跌破止损价格，被平仓；\n感悟：交易不可赌，严格按趋势来，回踩 20均线不破才开仓\n感悟2：市场上的钱挣不完，但是你的钱真是可以亏完。",
+          "created_at": "2026-07-06 07:27:43",
+          "leverage": 10,
+          "deleted_at": "2026-07-08 06:08:04",
+          "pnl": null
+        },
+        {
+          "id": 6,
+          "date": "",
+          "symbol": "1",
+          "direction": "long",
+          "timeframe": "15m",
+          "entry": 1,
+          "exit": 1,
+          "sl": 0,
+          "tp": null,
+          "position": null,
+          "reason": "1",
+          "review": "1",
+          "created_at": "2026-07-06 04:53:18",
+          "leverage": 10,
+          "deleted_at": "2026-07-07 08:40:09",
+          "pnl": null
+        },
+        {
+          "id": 7,
+          "date": "2026-07-06T08:00",
+          "symbol": "BTC",
+          "direction": "long",
+          "timeframe": "1H",
+          "entry": 63115,
+          "exit": 62900,
+          "sl": null,
+          "tp": null,
+          "position": 400,
+          "reason": "猫哥1小时策略看多，k线跌破了20均线，马上跌到60均线，感觉性价比很高（赔率很高）",
+          "review": "结果：跌破止损价格，被平仓；\n感悟：交易不可赌，严格按趋势来，回踩 20均线不破才开仓\n感悟2：市场上的钱挣不完，但是你的钱真是可以亏完。\n\n=============\n再次复盘：开仓位置不好。这个亏损很冤\n",
+          "created_at": "2026-07-06 07:27:43",
+          "leverage": 100,
+          "deleted_at": null,
+          "pnl": -172.13
+        },
+        {
+          "id": 8,
+          "date": "2026-07-07T20:28",
+          "symbol": "科磊KLAC",
+          "direction": "short",
+          "timeframe": "4H",
+          "entry": 219,
+          "exit": 226.45,
+          "sl": null,
+          "tp": null,
+          "position": 500,
+          "reason": "符合均线密集开仓法，赔率也满足。开仓",
+          "review": "做空最低价 是211 和 208。从盈利70U，到平仓亏损52U。这个没有分批止盈；\n\n总结应该是在想对低的点，止盈一部分。",
+          "created_at": "2026-07-07 12:36:14",
+          "leverage": 3,
+          "deleted_at": null,
+          "pnl": -52.18
+        },
+        {
+          "id": 9,
+          "date": "2026-07-08T00:06",
+          "symbol": "ONDO",
+          "direction": "long",
+          "timeframe": "1H",
+          "entry": 0.33,
+          "exit": 0.32,
+          "sl": null,
+          "tp": null,
+          "position": 500,
+          "reason": "符合均线密集开仓法。开仓价格是0.3361，自动平仓价格0.3321。",
+          "review": "疑似开仓不够清晰，下次开仓前截图\n==========\n止损已自动平仓，亏损61.3U",
+          "created_at": "2026-07-08 06:25:09",
+          "leverage": 10,
+          "deleted_at": null,
+          "pnl": 61.37
+        },
+        {
+          "id": 10,
+          "date": "2026-07-08T14:30",
+          "symbol": "FARTCOIN",
+          "direction": "short",
+          "timeframe": "1H",
+          "entry": 0.15,
+          "exit": 0.14,
+          "sl": null,
+          "tp": null,
+          "position": 300,
+          "reason": "开仓0.1551\n止盈0.1401\n止损0.158\n\n非常符合均线密集开仓法，上顶20均线不破。果断开仓\n",
+          "review": "开仓价 0.1554\n平仓均价 0.1470\n第一次 0.1478止盈70%  \n\n已平仓 盈利 157U；\n\n回溯 两次平仓，非常好。第二次甚至平仓在了最低点。\n\n但是忘记了，当时为啥平仓？？？一会想一下，这个策略可以保留。\n",
+          "created_at": "2026-07-08 06:37:16",
+          "leverage": 10,
+          "deleted_at": null,
+          "pnl": 157.37
+        },
+        {
+          "id": 11,
+          "date": "2026-07-08T14:37",
+          "symbol": "SUI",
+          "direction": "short",
+          "timeframe": "1H",
+          "entry": 0.72,
+          "exit": 0.7,
+          "sl": null,
+          "tp": null,
+          "position": 300,
+          "reason": "开仓：0.7291\n止盈：0.6937\n止损：0.7365\n\n符合 均线密集开仓法",
+          "review": "0.713止盈70%  共计盈利88.1938\n第一次止盈时，应该全部止盈。回溯数据第一次止盈时，基本已接近开仓时设置的止盈点位。平仓时没有仔细观察。\n\n总结 下次平仓需要查看\n",
+          "created_at": "2026-07-08 06:42:24",
+          "leverage": 10,
+          "deleted_at": null,
+          "pnl": 88.19
+        },
+        {
+          "id": 12,
+          "date": "2026-07-08T14:38",
+          "symbol": "XRP",
+          "direction": "short",
+          "timeframe": "1H",
+          "entry": 1.11,
+          "exit": 1.09,
+          "sl": null,
+          "tp": null,
+          "position": 300,
+          "reason": "开仓：1.1120\n止盈：1.0539\n止损：1.1233\n符合均线密集",
+          "review": "1.0763 止盈50%，盈利61U\n\n回溯：中规中矩，下次启发，小币种如果BTC趋势不对，果断止盈就行了\n",
+          "created_at": "2026-07-08 06:42:31",
+          "leverage": 10,
+          "deleted_at": null,
+          "pnl": 61.58
+        },
+        {
+          "id": 13,
+          "date": "2026-07-08T23:19",
+          "symbol": "PEPE",
+          "direction": "short",
+          "timeframe": "1H",
+          "entry": 0.25,
+          "exit": 0.26,
+          "sl": null,
+          "tp": null,
+          "position": 400,
+          "reason": "开仓时符合均线交易系统，上顶20均线未突破。\n开仓价0.25704\n平仓价0.26229",
+          "review": "以平仓，开仓400U,亏损84U，亏损21%,",
+          "created_at": "2026-07-09 01:25:58",
+          "leverage": 10,
+          "deleted_at": null,
+          "pnl": 84.11
+        },
+        {
+          "id": 14,
+          "date": "2026-07-09T09:27",
+          "symbol": "沃尔玛",
+          "direction": "long",
+          "timeframe": "1H",
+          "entry": 113.21,
+          "exit": 112.77,
+          "sl": null,
+          "tp": null,
+          "position": 400,
+          "reason": "符合均线密集开仓法，做多方向，回踩20均线不破。",
+          "review": "开仓金额400，10倍杠杆，亏损5%,亏损20U。",
+          "created_at": "2026-07-09 01:31:14",
+          "leverage": 10,
+          "deleted_at": null,
+          "pnl": -19.78
+        },
+        {
+          "id": 15,
+          "date": "2026-07-09T09:40",
+          "symbol": "谷歌A",
+          "direction": "long",
+          "timeframe": "1H",
+          "entry": 361.35,
+          "exit": 362.85,
+          "sl": null,
+          "tp": null,
+          "position": 400,
+          "reason": "均线密集开仓做多",
+          "review": "到达止损点自动平仓，亏损17U\n\n感觉合约股票不能用1H时间，太短。\n",
+          "created_at": "2026-07-09 01:44:25",
+          "leverage": 10,
+          "deleted_at": null,
+          "pnl": -17.03
+        },
+        {
+          "id": 16,
+          "date": "2026-07-09T09:44",
+          "symbol": "ADA",
+          "direction": "short",
+          "timeframe": "1H",
+          "entry": 0.16,
+          "exit": 0.17,
+          "sl": null,
+          "tp": null,
+          "position": 200,
+          "reason": "均线密集开仓法，但是开仓位置不是绝佳位置，走势已经走了一半了。",
+          "review": "止损点平仓，亏损48U。 开仓0.1656平仓 0.1694\n\n回溯总结：开仓位置不好，空投趋势已经走了一半了，性价比不够高。这次交易有点慌了。下次还是要稳妥一些，市场上的钱挣不完，但是你的钱可以亏完。",
+          "created_at": "2026-07-09 01:46:27",
+          "leverage": 10,
+          "deleted_at": null,
+          "pnl": -47.71
+        },
+        {
+          "id": 17,
+          "date": "2026-07-09T18:14",
+          "symbol": "ZEC",
+          "direction": "long",
+          "timeframe": "1H",
+          "entry": 467.17,
+          "exit": 469.73,
+          "sl": null,
+          "tp": null,
+          "position": 1000,
+          "reason": "1h 均线密集开仓法,回踩20均线不破。",
+          "review": "已平仓，平仓时查看止盈点，用了1H的视图查看了代币的走势，发现不是标准走势，看到有60U的盈利，就赶紧平仓了。平仓后发现不对，如果是1H的视图，可以找到很好的止盈点。如果有机会一会重新开一下",
+          "created_at": "2026-07-09 10:20:04",
+          "leverage": 10,
+          "deleted_at": null,
+          "pnl": 46.18
+        },
+        {
+          "id": 18,
+          "date": "2026-07-10T18:30",
+          "symbol": "测试",
+          "direction": "long",
+          "timeframe": "1H",
+          "entry": 1,
+          "exit": null,
+          "sl": null,
+          "tp": null,
+          "position": null,
+          "reason": "",
+          "review": "",
+          "created_at": "2026-07-10 10:30:26",
+          "leverage": 10,
+          "deleted_at": "2026-07-10 22:38:56",
+          "pnl": null
+        },
+        {
+          "id": 19,
+          "date": "2026-07-11T06:44",
+          "symbol": "test",
+          "direction": "long",
+          "timeframe": "1H",
+          "entry": 1,
+          "exit": null,
+          "sl": null,
+          "tp": null,
+          "position": 1,
+          "reason": "",
+          "review": "",
+          "created_at": "2026-07-10 22:44:49",
+          "leverage": 10,
+          "deleted_at": "2026-07-10 23:16:20",
+          "pnl": null
+        },
+        {
+          "id": 20,
+          "date": "2026-07-11T07:01",
+          "symbol": "VELVET",
+          "direction": "long",
+          "timeframe": "1H",
+          "entry": 0.26514,
+          "exit": 0.59359,
+          "sl": null,
+          "tp": null,
+          "position": 1000,
+          "reason": "符合均线密集开仓法，做多开仓，因为查看到此代币波动较大，没有使用杠杆开单。",
+          "review": "买入后，此代币涨势很猛。在上涨43%时，止盈了50%。复盘看疑似不够合理。如果止盈金额是开仓亏损金额的三倍止盈是否更合理？\n再后续盯盘过程中，代币有明显下跌趋势，平仓不够果断。眼瞅着利润从100到1。。。。\n\n此代币只盈利了18%。如果止盈合理，盈利33%以上应该没问题。止盈仓位待研究。",
+          "created_at": "2026-07-10 23:07:45",
+          "leverage": 1,
+          "deleted_at": null,
+          "pnl": 183
+        }
+      ]
+    },
+    "watchlist_logs": {
+      "schema": "CREATE TABLE watchlist_logs (\n            id INTEGER PRIMARY KEY AUTOINCREMENT,\n            watchlist_id INTEGER NOT NULL,\n            action TEXT NOT NULL,\n            changes TEXT,\n            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,\n            FOREIGN KEY (watchlist_id) REFERENCES watchlist(id)\n        )",
+      "count": 20,
+      "data": [
+        {
+          "id": 1,
+          "watchlist_id": 5,
+          "action": "create",
+          "changes": "{\"stock_code\":\"测试\",\"signal\":\"测试\",\"expected_gain\":null,\"is_watching\":1,\"remark\":null}",
+          "created_at": "2026-07-07 11:49:27"
+        },
+        {
+          "id": 2,
+          "watchlist_id": 5,
+          "action": "update",
+          "changes": "{\"stock_code\":{\"old\":\"测试\",\"new\":\"测试11\"},\"signal\":{\"old\":\"测试\",\"new\":\"测试111222\"},\"expected_gain\":{\"old\":null,\"new\":22},\"is_watching\":{\"old\":1,\"new\":0},\"remark\":{\"old\":null,\"new\":\"2345\"}}",
+          "created_at": "2026-07-07 11:49:42"
+        },
+        {
+          "id": 3,
+          "watchlist_id": 3,
+          "action": "update",
+          "changes": "{\"remark\":{\"old\":null,\"new\":null}}",
+          "created_at": "2026-07-07 11:50:05"
+        },
+        {
+          "id": 4,
+          "watchlist_id": 2,
+          "action": "update",
+          "changes": "{\"remark\":{\"old\":null,\"new\":null}}",
+          "created_at": "2026-07-07 11:50:08"
+        },
+        {
+          "id": 5,
+          "watchlist_id": 1,
+          "action": "update",
+          "changes": "{\"remark\":{\"old\":null,\"new\":null}}",
+          "created_at": "2026-07-07 11:50:10"
+        },
+        {
+          "id": 6,
+          "watchlist_id": 2,
+          "action": "update",
+          "changes": "{\"remark\":{\"old\":null,\"new\":\"1\"}}",
+          "created_at": "2026-07-07 12:06:27"
+        },
+        {
+          "id": 7,
+          "watchlist_id": 6,
+          "action": "create",
+          "changes": "{\"stock_code\":\"测试\",\"signal\":null,\"expected_gain\":null,\"is_watching\":1,\"remark\":\"1\"}",
+          "created_at": "2026-07-07 12:06:35"
+        },
+        {
+          "id": 8,
+          "watchlist_id": 6,
+          "action": "update",
+          "changes": "{\"remark\":{\"old\":\"1\",\"new\":\"11\"}}",
+          "created_at": "2026-07-07 12:06:39"
+        },
+        {
+          "id": 9,
+          "watchlist_id": 2,
+          "action": "update",
+          "changes": "{\"remark\":{\"old\":\"1\",\"new\":\"猫哥 日线还没有走出看空信号，4小时交易基本可以进场了。看空 执行设置在179\"}}",
+          "created_at": "2026-07-07 12:09:42"
+        },
+        {
+          "id": 10,
+          "watchlist_id": 2,
+          "action": "update",
+          "changes": "{\"remark\":{\"old\":\"猫哥 日线还没有走出看空信号，4小时交易基本可以进场了。看空 执行设置在179\",\"new\":\"猫哥 日线还没有走出看空信号，4小时交易基本可以进场了。看空 执行设置在179.。再慎重一些\\n\"}}",
+          "created_at": "2026-07-07 12:10:16"
+        },
+        {
+          "id": 11,
+          "watchlist_id": 1,
+          "action": "update",
+          "changes": "{\"signal\":{\"old\":null,\"new\":\"看空\"},\"remark\":{\"old\":null,\"new\":\"持续关注吧，跌破20均线，上顶不破就可以开仓\"}}",
+          "created_at": "2026-07-07 12:13:08"
+        },
+        {
+          "id": 12,
+          "watchlist_id": 3,
+          "action": "update",
+          "changes": "{\"remark\":{\"old\":null,\"new\":\"持续关注吧，跌破20均线，上顶不破就可以开仓\"}}",
+          "created_at": "2026-07-07 12:13:52"
+        },
+        {
+          "id": 13,
+          "watchlist_id": 3,
+          "action": "update",
+          "changes": "{\"remark\":{\"old\":\"持续关注吧，跌破20均线，上顶不破就可以开仓\",\"new\":\"持续关注吧，跌破20均线，上顶不破就可以开仓\\n================\\n如果方向改变，看多那么前途无量呢\"}}",
+          "created_at": "2026-07-07 12:20:55"
+        },
+        {
+          "id": 14,
+          "watchlist_id": 2,
+          "action": "update",
+          "changes": "{\"remark\":{\"old\":\"猫哥 日线还没有走出看空信号，4小时交易基本可以进场了。看空 执行设置在179.。再慎重一些\\n\",\"new\":\"猫哥 日线还没有走出看空信号，4小时交易基本可以进场了。看空 执行设置在179.。再慎重一些...已开仓.....\\n\"}}",
+          "created_at": "2026-07-07 12:37:17"
+        },
+        {
+          "id": 15,
+          "watchlist_id": 7,
+          "action": "create",
+          "changes": "{\"stock_code\":\"ORDI\",\"signal\":\"看空\",\"expected_gain\":7,\"is_watching\":1,\"remark\":null}",
+          "created_at": "2026-07-08 10:36:59"
+        },
+        {
+          "id": 16,
+          "watchlist_id": 8,
+          "action": "create",
+          "changes": "{\"stock_code\":\"CRV\",\"signal\":\"空\",\"expected_gain\":5,\"is_watching\":1,\"remark\":null}",
+          "created_at": "2026-07-08 10:50:00"
+        },
+        {
+          "id": 17,
+          "watchlist_id": 9,
+          "action": "create",
+          "changes": "{\"stock_code\":\"ZEC\",\"signal\":\"看空\",\"expected_gain\":12,\"is_watching\":1,\"remark\":\"1h 看一次\"}",
+          "created_at": "2026-07-09 03:32:54"
+        },
+        {
+          "id": 18,
+          "watchlist_id": 8,
+          "action": "update",
+          "changes": "{\"remark\":{\"old\":null,\"new\":\"一天之后  回溯 爆仓\"}}",
+          "created_at": "2026-07-09 04:02:17"
+        },
+        {
+          "id": 19,
+          "watchlist_id": 7,
+          "action": "update",
+          "changes": "{\"remark\":{\"old\":null,\"new\":\"一天之后 回溯 爆仓\"}}",
+          "created_at": "2026-07-09 04:03:54"
+        },
+        {
+          "id": 20,
+          "watchlist_id": 9,
+          "action": "update",
+          "changes": "{\"remark\":{\"old\":\"1h 看一次\",\"new\":\"1h 看一次\\n假设 15：40 以466.22开仓\\n止损464.56\\n止盈482.53\"}}",
+          "created_at": "2026-07-09 07:40:52"
+        }
+      ]
+    },
+    "trade_attachments": {
+      "schema": "CREATE TABLE trade_attachments (\n            id INTEGER PRIMARY KEY AUTOINCREMENT,\n            trade_id INTEGER NOT NULL,\n            filename TEXT NOT NULL,\n            filepath TEXT NOT NULL,\n            file_url TEXT NOT NULL,\n            file_type TEXT,\n            size INTEGER,\n            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,\n            FOREIGN KEY (trade_id) REFERENCES trades(id)\n        )",
+      "count": 5,
+      "data": [
+        {
+          "id": 3,
+          "trade_id": 19,
+          "filename": "60450556791a733f12b454dcae4ee199.jpg",
+          "filepath": "d:\\Mywork\\code\\trading-journal-pro\\public\\uploads\\1783724134652-47802575.jpg",
+          "file_url": "/uploads/1783724134652-47802575.jpg",
+          "file_type": "image/jpeg",
+          "size": 332556,
+          "created_at": "2026-07-10 22:55:34"
+        },
+        {
+          "id": 4,
+          "trade_id": 19,
+          "filename": "rayls-1105.png",
+          "filepath": "d:\\Mywork\\code\\trading-journal-pro\\public\\uploads\\1783724435281-393200697.png",
+          "file_url": "/uploads/1783724435281-393200697.png",
+          "file_type": "image/png",
+          "size": 989480,
+          "created_at": "2026-07-10 23:00:35"
+        },
+        {
+          "id": 7,
+          "trade_id": 20,
+          "filename": "35474d3104d64c77d3b6f5c23273a5c1.jpg",
+          "filepath": "d:\\Mywork\\code\\trading-journal-pro\\public\\uploads\\1783725598191-562745370.jpg",
+          "file_url": "/uploads/1783725598191-562745370.jpg",
+          "file_type": "image/jpeg",
+          "size": 226221,
+          "created_at": "2026-07-10 23:19:58"
+        },
+        {
+          "id": 8,
+          "trade_id": 20,
+          "filename": "bca0447870e9d374669b61ae8ba2c733.jpg",
+          "filepath": "d:\\Mywork\\code\\trading-journal-pro\\public\\uploads\\1783725598194-254959954.jpg",
+          "file_url": "/uploads/1783725598194-254959954.jpg",
+          "file_type": "image/jpeg",
+          "size": 255016,
+          "created_at": "2026-07-10 23:19:58"
+        },
+        {
+          "id": 9,
+          "trade_id": 20,
+          "filename": "264e1e74dc07c7beb707f5b57db0d615.jpg",
+          "filepath": "d:\\Mywork\\code\\trading-journal-pro\\public\\uploads\\1783725598196-535058421.jpg",
+          "file_url": "/uploads/1783725598196-535058421.jpg",
+          "file_type": "image/jpeg",
+          "size": 255859,
+          "created_at": "2026-07-10 23:19:58"
+        }
+      ]
+    },
+    "watchlist": {
+      "schema": "CREATE TABLE watchlist (\n            id INTEGER PRIMARY KEY AUTOINCREMENT,\n            stock_code TEXT NOT NULL,\n            signal TEXT,\n            expected_gain REAL,\n            is_watching INTEGER DEFAULT 1,\n            deleted_at DATETIME,\n            created_at DATETIME DEFAULT CURRENT_TIMESTAMP\n        , remark TEXT, updated_at DATETIME)",
+      "count": 9,
+      "data": [
+        {
+          "id": 1,
+          "stock_code": "NFLX ",
+          "signal": "看空",
+          "expected_gain": 12.75,
+          "is_watching": 1,
+          "deleted_at": null,
+          "created_at": "2026-07-07 10:55:36",
+          "remark": "持续关注吧，跌破20均线，上顶不破就可以开仓",
+          "updated_at": "2026-07-07 12:13:08"
+        },
+        {
+          "id": 2,
+          "stock_code": "KLAC",
+          "signal": "",
+          "expected_gain": 20,
+          "is_watching": 1,
+          "deleted_at": null,
+          "created_at": "2026-07-07 10:59:36",
+          "remark": "猫哥 日线还没有走出看空信号，4小时交易基本可以进场了。看空 执行设置在179.。再慎重一些...已开仓.....\n",
+          "updated_at": "2026-07-07 12:37:17"
+        },
+        {
+          "id": 3,
+          "stock_code": "MSTR",
+          "signal": "日线看空",
+          "expected_gain": 40,
+          "is_watching": 1,
+          "deleted_at": null,
+          "created_at": "2026-07-07 11:17:40",
+          "remark": "持续关注吧，跌破20均线，上顶不破就可以开仓\n================\n如果方向改变，看多那么前途无量呢",
+          "updated_at": "2026-07-07 12:20:55"
+        },
+        {
+          "id": 4,
+          "stock_code": "测试111",
+          "signal": "1",
+          "expected_gain": null,
+          "is_watching": 1,
+          "deleted_at": "2026-07-07 11:49:14",
+          "created_at": "2026-07-07 11:18:17",
+          "remark": null,
+          "updated_at": null
+        },
+        {
+          "id": 5,
+          "stock_code": "测试11",
+          "signal": "测试111222",
+          "expected_gain": 22,
+          "is_watching": 0,
+          "deleted_at": "2026-07-07 11:49:59",
+          "created_at": "2026-07-07 11:49:27",
+          "remark": "2345",
+          "updated_at": "2026-07-07 11:49:42"
+        },
+        {
+          "id": 6,
+          "stock_code": "测试",
+          "signal": "",
+          "expected_gain": null,
+          "is_watching": 1,
+          "deleted_at": "2026-07-07 12:06:47",
+          "created_at": "2026-07-07 12:06:35",
+          "remark": "11",
+          "updated_at": "2026-07-07 12:06:39"
+        },
+        {
+          "id": 7,
+          "stock_code": "ORDI",
+          "signal": "看空",
+          "expected_gain": 7,
+          "is_watching": 1,
+          "deleted_at": null,
+          "created_at": "2026-07-08 10:36:59",
+          "remark": "一天之后 回溯 爆仓",
+          "updated_at": "2026-07-09 04:03:54"
+        },
+        {
+          "id": 8,
+          "stock_code": "CRV",
+          "signal": "空",
+          "expected_gain": 5,
+          "is_watching": 1,
+          "deleted_at": null,
+          "created_at": "2026-07-08 10:50:00",
+          "remark": "一天之后  回溯 爆仓",
+          "updated_at": "2026-07-09 04:02:17"
+        },
+        {
+          "id": 9,
+          "stock_code": "ZEC",
+          "signal": "看空",
+          "expected_gain": 12,
+          "is_watching": 1,
+          "deleted_at": null,
+          "created_at": "2026-07-09 03:32:54",
+          "remark": "1h 看一次\n假设 15：40 以466.22开仓\n止损464.56\n止盈482.53",
+          "updated_at": "2026-07-09 07:40:52"
+        }
+      ]
+    },
+    "fund_records": {
+      "schema": "CREATE TABLE fund_records (\n            id INTEGER PRIMARY KEY AUTOINCREMENT,\n            type TEXT NOT NULL,\n            amount REAL NOT NULL,\n            address TEXT,\n            reason TEXT,\n            date TEXT NOT NULL,\n            created_at DATETIME DEFAULT CURRENT_TIMESTAMP\n        , deleted_at DATETIME)",
+      "count": 8,
+      "data": [
+        {
+          "id": 1,
+          "type": "deposit",
+          "amount": 1,
+          "address": "1",
+          "reason": "1",
+          "date": "2026-07-07T11:46",
+          "created_at": "2026-07-07 03:46:51",
+          "deleted_at": "2026-07-07 08:21:30"
+        },
+        {
+          "id": 2,
+          "type": "withdraw",
+          "amount": 100,
+          "address": "币安zeechen",
+          "reason": "开号",
+          "date": "2026-06-16T21:08",
+          "created_at": "2026-07-07 08:10:26",
+          "deleted_at": "2026-07-08 06:07:35"
+        },
+        {
+          "id": 3,
+          "type": "deposit",
+          "amount": 586,
+          "address": "zeechen币安",
+          "reason": "合约 开启交易",
+          "date": "2026-07-07T10:58",
+          "created_at": "2026-07-07 08:11:37",
+          "deleted_at": null
+        },
+        {
+          "id": 4,
+          "type": "withdraw",
+          "amount": 49,
+          "address": "转到欧意并提现",
+          "reason": "好运 几分钟内直接盈利将近50U，出金改善一下生活",
+          "date": "2026-07-01T12:43",
+          "created_at": "2026-07-07 08:13:45",
+          "deleted_at": null
+        },
+        {
+          "id": 5,
+          "type": "withdraw",
+          "amount": 156,
+          "address": "转到okx并体现",
+          "reason": "这几天有几百U的盈利，提出一些，去山姆超市消费",
+          "date": "2026-07-05T14:17",
+          "created_at": "2026-07-07 08:15:03",
+          "deleted_at": null
+        },
+        {
+          "id": 6,
+          "type": "deposit",
+          "amount": 1,
+          "address": "",
+          "reason": "",
+          "date": "2026-07-07T16:21",
+          "created_at": "2026-07-07 08:21:43",
+          "deleted_at": "2026-07-07 08:21:48"
+        },
+        {
+          "id": 7,
+          "type": "deposit",
+          "amount": 1000,
+          "address": "宁bitgit钱包",
+          "reason": "合约继续交易",
+          "date": "2026-07-07T21:05",
+          "created_at": "2026-07-08 06:06:02",
+          "deleted_at": null
+        },
+        {
+          "id": 8,
+          "type": "deposit",
+          "amount": 100,
+          "address": "币安转入",
+          "reason": "开号",
+          "date": "2026-06-16T14:06",
+          "created_at": "2026-07-08 06:07:25",
+          "deleted_at": null
+        }
+      ]
+    },
+    "account_balance": {
+      "schema": "CREATE TABLE account_balance (\n            id INTEGER PRIMARY KEY AUTOINCREMENT,\n            amount REAL NOT NULL,\n            reason TEXT,\n            date TEXT NOT NULL,\n            deleted_at DATETIME,\n            created_at DATETIME DEFAULT CURRENT_TIMESTAMP\n        )",
+      "count": 2,
+      "data": [
+        {
+          "id": 1,
+          "amount": 1026,
+          "reason": "初始化",
+          "date": "2026-07-07T08:31",
+          "deleted_at": null,
+          "created_at": "2026-07-07 08:31:35"
+        },
+        {
+          "id": 2,
+          "amount": 1,
+          "reason": "测试",
+          "date": "2026-07-07T16:31",
+          "deleted_at": "2026-07-07 08:32:02",
+          "created_at": "2026-07-07 08:31:55"
+        }
+      ]
+    }
+  }
+}
