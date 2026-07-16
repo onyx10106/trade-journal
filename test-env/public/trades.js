@@ -17,7 +17,8 @@ const fetchWithAuth = async (url, options = {}) => {
     'Authorization': `Bearer ${token}`
   };
   
-  const res = await fetch(url, { ...options, headers });
+  const fullUrl = url.startsWith('http') ? url : apiUrl(url);
+  const res = await fetch(fullUrl, { ...options, headers });
   
   if (res.status === 401) {
     localStorage.removeItem('token');

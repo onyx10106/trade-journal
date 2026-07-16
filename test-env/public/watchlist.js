@@ -12,7 +12,8 @@ const fetchWithAuth = async (url, options = {}) => {
     ...options.headers,
     'Authorization': `Bearer ${token}`
   };
-  const res = await fetch(url, { ...options, headers });
+  const fullUrl = url.startsWith('http') ? url : apiUrl(url);
+  const res = await fetch(fullUrl, { ...options, headers });
   if (res.status === 401) {
     localStorage.removeItem('token');
     localStorage.removeItem('username');
@@ -365,11 +366,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     try {
-      const res = await fetch(`/api/restore-from-backup`, {
-        method: 'POST',
-        body: formData,
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const res = await fetch(apiUrl(`/api/restore-from-backup`), {
+      method: 'POST',
+      body: formData,
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
 
       const result = await res.json();
       if (result.success) {

@@ -414,14 +414,26 @@ textarea {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
 }
 
-@media (max-width: 600px) {
-  .form-row {
-    grid-template-columns: 1fr;
+@media (max-width: 768px) {
+  body {
+    padding: 20px 10px;
+  }
+  
+  .nav {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .nav-btn {
+    padding: 8px 14px;
+    font-size: 12px;
   }
   
   .card {
     padding: 20px 16px;
     border-radius: 16px;
+    margin-bottom: 16px;
   }
   
   .header h2 {
@@ -454,6 +466,74 @@ textarea {
   .fund-table td {
     padding: 10px 8px;
   }
+  
+  .btn-edit, .btn-delete {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  
+  .toast {
+    top: 20px;
+    right: 10px;
+    left: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 16px 8px;
+  }
+  
+  .nav {
+    gap: 6px;
+  }
+  
+  .nav-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .card {
+    padding: 16px 12px;
+    border-radius: 12px;
+  }
+  
+  .header h2 {
+    font-size: 20px;
+  }
+  
+  .balance-card {
+    padding: 20px;
+  }
+  
+  .balance-card .amount {
+    font-size: 28px;
+  }
+  
+  input, select, textarea {
+    padding: 12px 14px;
+    font-size: 15px;
+  }
+  
+  .fund-table {
+    font-size: 11px;
+  }
+  
+  .fund-table th,
+  .fund-table td {
+    padding: 8px 6px;
+  }
+  
+  .type-badge {
+    padding: 3px 8px;
+    font-size: 11px;
+  }
 }
 </style>
 </head>
@@ -468,6 +548,7 @@ textarea {
     <a href="/add" class="nav-btn">添加交易</a>
     <a href="/funds" class="nav-btn active">出入金记录</a>
     <a href="/watchlist" class="nav-btn">我的关注</a>
+    <a href="/notes" class="nav-btn">交易心得</a>
     <button class="nav-btn" onclick="createManualBackup()">📦 创建备份</button>
     <button class="nav-btn" onclick="document.getElementById('backupFolderInput').click()">恢复备份</button>
   </div>
@@ -613,6 +694,7 @@ textarea {
   </div>
 </div>
 
+<script src="config.js"></script>
 <script src="funds.js"></script>
 
 </body>

@@ -156,6 +156,7 @@ body {
   </form>
 </div>
 
+<script src="/config.js"></script>
 <script>
 const loginForm = document.getElementById('loginForm');
 const errorMessage = document.getElementById('errorMessage');
@@ -171,7 +172,7 @@ loginForm.addEventListener('submit', async (e) => {
   errorMessage.classList.remove('show');
   
   try {
-    const res = await fetch('/api/login', {
+    const res = await fetch(apiUrl('/api/login'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })

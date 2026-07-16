@@ -462,6 +462,7 @@ body {
 
 <div class="toast" id="toast"></div>
 
+<script src="/config.js"></script>
 <script>
 let backups = [];
 let currentRestoreBackup = null;
@@ -501,7 +502,7 @@ const formatDate = (date) => {
 
 const loadBackups = async () => {
   try {
-    const response = await fetch('/api/backups', {
+    const response = await fetch(apiUrl('/api/backups'), {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -528,7 +529,7 @@ const createManualBackup = async () => {
   btn.disabled = true;
 
   try {
-    const response = await fetch('/api/backups/manual', {
+    const response = await fetch(apiUrl('/api/backups/manual'), {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`

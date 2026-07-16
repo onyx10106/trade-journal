@@ -3,7 +3,7 @@ const path = require('path');
 const crypto = require('crypto');
 const db = require('./database');
 
-const BACKUP_DIR = path.join(__dirname, 'backups');
+const BACKUP_DIR = path.join(__dirname, '..', 'backups');
 const UPLOADS_DIR = path.join(__dirname, 'public', 'uploads');
 const MAX_BACKUPS = 20;
 
@@ -422,5 +422,6 @@ module.exports = {
   getBackupList,
   restoreFromBackup,
   ensureBackupDir,
-  getEffectiveUploadsPath
+  getEffectiveUploadsPath,
+  BACKUP_DIR
 };

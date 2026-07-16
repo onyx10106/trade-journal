@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     try {
-      const res = await fetch(`/api/restore-from-backup`, {
+      const res = await fetch(apiUrl(`/api/restore-from-backup`), {
         method: 'POST',
         body: formData,
         headers: { 'Authorization': `Bearer ${token}` }
@@ -224,7 +224,7 @@ const createManualBackup = async () => {
   btn.disabled = true;
 
   try {
-    const res = await fetch('/api/backups/manual', {
+    const res = await fetch(apiUrl('/api/backups/manual'), {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` }
     });

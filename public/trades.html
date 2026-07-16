@@ -719,6 +719,32 @@ select {
 }
 
 @media (max-width: 768px) {
+  body {
+    padding: 20px 10px;
+  }
+  
+  .nav {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .nav-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+  
+  .action-buttons-row {
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  .btn-action {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+  
   .filter-row {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -728,28 +754,111 @@ select {
   }
   
   .card {
-    padding: 20px 16px;
+    padding: 16px 12px;
+    margin-bottom: 16px;
   }
   
   .header h2 {
-    font-size: 22px;
+    font-size: 20px;
   }
   
   .trade-table {
-    font-size: 12px;
+    font-size: 11px;
   }
   
   .trade-table th,
   .trade-table td {
-    padding: 8px 6px;
+    padding: 6px 4px;
+  }
+  
+  .trade-table th {
+    font-size: 10px;
   }
   
   .action-buttons {
     flex-direction: column;
+    gap: 4px;
+  }
+  
+  .btn-edit, .btn-delete {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+  
+  .attachment-thumb {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .pagination {
+    gap: 4px;
+  }
+  
+  .pagination button {
+    padding: 6px 10px;
+    font-size: 12px;
   }
   
   .modal-form-row {
     grid-template-columns: 1fr;
+  }
+  
+  .modal {
+    padding: 20px;
+    margin: 10px;
+    max-height: calc(100vh - 20px);
+  }
+  
+  .toast {
+    top: 20px;
+    right: 10px;
+    left: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 16px 8px;
+  }
+  
+  .nav {
+    gap: 6px;
+  }
+  
+  .nav-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+  
+  .filter-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .filter-row > div:last-child {
+    grid-column: span 1;
+  }
+  
+  .card {
+    padding: 12px 10px;
+    border-radius: 12px;
+  }
+  
+  .trade-table th,
+  .trade-table td {
+    padding: 4px 3px;
+    font-size: 10px;
+  }
+  
+  .action-buttons-row {
+    gap: 8px;
+  }
+  
+  .btn-action {
+    padding: 8px 12px;
+    font-size: 12px;
   }
 }
 
@@ -851,6 +960,7 @@ select {
       <a href="/add" class="btn-action btn-add">添加交易</a>
       <a href="/funds" class="btn-action btn-funds">出入金记录</a>
       <a href="/watchlist" class="btn-action btn-watchlist">我的关注</a>
+      <a href="/notes" class="btn-action btn-notes">交易心得</a>
       <button class="btn-action btn-backup-create" onclick="createManualBackup()">📦 创建备份</button>
       <button class="btn-action btn-backups" onclick="document.getElementById('backupFolderInput').click()">恢复备份</button>
       <button class="btn-action btn-logout" onclick="logout()">退出登录</button>
@@ -1048,6 +1158,7 @@ select {
 
 <div class="toast" id="toast"></div>
 
+<script src="config.js"></script>
 <script src="trades.js"></script>
 
 </body>

@@ -98,6 +98,10 @@ app.get('/backups', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'backups.html'));
 });
 
+app.get('/notes', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'notes.html'));
+});
+
 app.get('/add', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'add.html'));
 });
@@ -815,7 +819,7 @@ app.get('/api/backups', authenticateToken, (req, res) => {
 
 app.delete('/api/backups/:name', authenticateToken, (req, res) => {
   const { name } = req.params;
-  const backupFolderPath = path.join(__dirname, 'backups', name);
+  const backupFolderPath = path.join(backup.BACKUP_DIR, name);
   
   if (!fs.existsSync(backupFolderPath)) {
     return res.json({ success: false, error: '备份不存在' });
@@ -846,7 +850,7 @@ app.delete('/api/backups/:name', authenticateToken, (req, res) => {
 app.post('/api/backups/:name/restore', authenticateToken, (req, res) => {
   const { name } = req.params;
   
-  const backupFolderPath = path.join(__dirname, 'backups', name);
+  const backupFolderPath = path.join(backup.BACKUP_DIR, name);
   const dataFilePath = path.join(backupFolderPath, 'data.json');
   
   if (!fs.existsSync(dataFilePath)) {
@@ -930,6 +934,138 @@ app.post('/api/backups/:name/restore', authenticateToken, (req, res) => {
           }
         });
       });
+    });
+  });
+});
+
+app.get('/api/notes', authenticateToken, (req, res) => {
+  const { search, category } = req.query;
+  
+  let query = `SELECT * FROM trading_notes WHERE deleted_at IS NULL`;
+  const params = [];
+  
+  if (search) {
+    query += ` AND (title LIKE ? OR content LIKE ?)`;
+    params.push(`%${search}%`, `%${search}%`);
+  }
+  
+  if (category && category !== '全部') {
+    query += ` AND category = ?`;
+    params.push(category);
+  }
+  
+  query += ` ORDER BY is_favorite DESC, created_at DESC`;
+  
+  db.all(query, params, (err, rows) => {
+    if (err) {
+      return res.json({ success: false, error: err.message });
+    }
+    res.json({ success: true, data: rows });
+  });
+});
+
+app.get('/api/notes/:id', authenticateToken, (req, res) => {
+  const { id } = req.params;
+  
+  db.get(`SELECT * FROM trading_notes WHERE id = ? AND deleted_at IS NULL`, [id], (err, row) => {
+    if (err) {
+      return res.json({ success: false, error: err.message });
+    }
+    if (!row) {
+      return res.json({ success: false, error: '心得不存在' });
+    }
+    res.json({ success: true, data: row });
+  });
+});
+
+app.post('/api/notes', authenticateToken, (req, res) => {
+  const { title, content, category, tags } = req.body;
+  
+  if (!title) {
+    return res.json({ success: false, error: '标题不能为空' });
+  }
+  
+  db.run(
+    `INSERT INTO trading_notes (title, content, category, tags, updated_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+    [title, content || '', category || '心得', tags || ''],
+    function(err) {
+      if (err) {
+        return res.json({ success: false, error: err.message });
+      }
+      backup.createBackup();
+      db.get(`SELECT * FROM trading_notes WHERE id = ?`, [this.lastID], (getErr, row) => {
+        if (getErr) {
+          return res.json({ success: false, error: getErr.message });
+        }
+        res.json({ success: true, data: row });
+      });
+    }
+  );
+});
+
+app.put('/api/notes/:id', authenticateToken, (req, res) => {
+  const { id } = req.params;
+  const { title, content, category, tags } = req.body;
+  
+  if (!title) {
+    return res.json({ success: false, error: '标题不能为空' });
+  }
+  
+  db.run(
+    `UPDATE trading_notes SET title = ?, content = ?, category = ?, tags = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND deleted_at IS NULL`,
+    [title, content || '', category || '心得', tags || '', id],
+    function(err) {
+      if (err) {
+        return res.json({ success: false, error: err.message });
+      }
+      if (this.changes === 0) {
+        return res.json({ success: false, error: '心得不存在' });
+      }
+      backup.createBackup();
+      db.get(`SELECT * FROM trading_notes WHERE id = ?`, [id], (getErr, row) => {
+        if (getErr) {
+          return res.json({ success: false, error: getErr.message });
+        }
+        res.json({ success: true, data: row });
+      });
+    }
+  );
+});
+
+app.delete('/api/notes/:id', authenticateToken, (req, res) => {
+  const { id } = req.params;
+  
+  db.run(`UPDATE trading_notes SET deleted_at = CURRENT_TIMESTAMP WHERE id = ? AND deleted_at IS NULL`, [id], function(err) {
+    if (err) {
+      return res.json({ success: false, error: err.message });
+    }
+    if (this.changes === 0) {
+      return res.json({ success: false, error: '心得不存在' });
+    }
+    backup.createBackup();
+    res.json({ success: true, data: { id, changes: this.changes } });
+  });
+});
+
+app.post('/api/notes/:id/favorite', authenticateToken, (req, res) => {
+  const { id } = req.params;
+  
+  db.get(`SELECT is_favorite FROM trading_notes WHERE id = ? AND deleted_at IS NULL`, [id], (err, row) => {
+    if (err) {
+      return res.json({ success: false, error: err.message });
+    }
+    if (!row) {
+      return res.json({ success: false, error: '心得不存在' });
+    }
+    
+    const newFavorite = row.is_favorite === 1 ? 0 : 1;
+    
+    db.run(`UPDATE trading_notes SET is_favorite = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, [newFavorite, id], function(updateErr) {
+      if (updateErr) {
+        return res.json({ success: false, error: updateErr.message });
+      }
+      backup.createBackup();
+      res.json({ success: true, data: { id, is_favorite: newFavorite } });
     });
   });
 });

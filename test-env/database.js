@@ -141,4 +141,20 @@ db.serialize(() => {
     `);
 });
 
+db.serialize(() => {
+    db.run(`
+        CREATE TABLE IF NOT EXISTS trading_notes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            content TEXT,
+            category TEXT DEFAULT '心得',
+            tags TEXT,
+            is_favorite INTEGER DEFAULT 0,
+            deleted_at DATETIME,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+});
+
 module.exports = db;
